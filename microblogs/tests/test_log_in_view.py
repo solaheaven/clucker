@@ -2,6 +2,7 @@ from django.test import TestCase
 from django.urls import reverse
 from microblogs.forms import LogInForm
 from microblogs.models import User
+from django.contrib import messages
 from .helpers import LogInTester
 
 class LogInViewTestCase(TestCase, LogInTester):
@@ -37,6 +38,9 @@ def test_unsuccesful_log_in(self):
     self.assertTrue(isinstance(form, LogInForm))
     self.assertFalse(form.is_bound)
     self.assertFalse(self._is_logged_in())
+    messages_list = list(response.context['messages'])
+    self.assertEqual(len(messages_list), 1)
+    self.assertEqual(messages_list[0].level, messages.ERROR)
 
 def test_succesful_log_in(self):
     form_input = { 'username': '@johndoe', 'password': 'Password123' }
