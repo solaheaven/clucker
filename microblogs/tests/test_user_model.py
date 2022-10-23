@@ -71,7 +71,7 @@ class UserModelTestCase(TestCase):
         self._assert_user_is_invalid()
 #last name
     def test_last_name_cannot_be_blank(self):
-        self.user.flast_name = ''
+        self.user.last_name = ''
         self._assert_user_is_invalid()
         
     def test_last_name_need_not_to_be_unique(self):
@@ -130,9 +130,6 @@ class UserModelTestCase(TestCase):
         self.user.bio= 'x' * 520
         self._assert_user_is_valid()
 
-    def test_bio_may_not_contain_more_than_520_characters(self):
-        self.user.bio= 'x' * 521
-        self._assert_user_is_invalid()
 #basic
     def _assert_user_is_valid(self):
         try:
