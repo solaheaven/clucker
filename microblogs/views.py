@@ -2,8 +2,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate,login,logout
 from microblogs.forms import SignUpForms, LogInForm
 from django.contrib import messages
-
-
+from django.core.cache import cache
+"""view"""
 def feed(request):
     return render(request, 'feed.html')
     
@@ -14,6 +14,7 @@ def log_out(request):
     logout(request) 
     return redirect('home')
 
+
 def log_in(request):
     if request.method == 'POST':
         form = LogInForm(request.POST)
@@ -23,12 +24,12 @@ def log_in(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('feed')
-        #add error message
+                redirect_url = request.POST.get('next') or 'feed'
+                return redirect(redirect_url)
         messages.add_message(request, messages.ERROR, "The credentials provided were invalid!")
-
     form = LogInForm()
-    return render(request, 'log_in.html', {'form':form})
+    next = request.GET.get('next') or ''
+    return render(request, 'log_in.html', {'form': form, 'next': next})
 
 
 def sign_up(request):
